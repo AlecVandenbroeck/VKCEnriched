@@ -22,6 +22,14 @@ class CraftDetector:
         right_center = (int(x_max), int(y_min + (y_max - y_min) / 2))
         return [left_center, right_center]
 
+    def get_dims(self, bbox):
+        y_min = min([bbox[0][1], bbox[1][1], bbox[2][1], bbox[3][1]])
+        y_max = max([bbox[0][1], bbox[1][1], bbox[2][1], bbox[3][1]])
+        x_min = min([bbox[0][0], bbox[1][0], bbox[2][0], bbox[3][0]])
+        x_max = max([bbox[0][0], bbox[1][0], bbox[2][0], bbox[3][0]])
+        return x_max-x_min, y_max-y_min
+
+
     def get_line_bboxes(self, lines):
         lines_bboxes = []
         for i in lines:
@@ -80,13 +88,16 @@ class CraftDetector:
                             if custom_distance(centers[most_left][1], centers[i][0]) < lowest_dist:
                                 closest = i
                                 lowest_dist = custom_distance(centers[most_left][1], centers[i][0])
-
-                if closest is not None and 0 <= lowest_dist <= 80:
-                    lines[len(lines) - 1].append(bboxes[closest])
-                    used[closest] = True
-                    most_left = closest
-                else:
-                    keep_going = False
+                if closest is not None:
+                    _, h1 = self.get_dims(bboxes[most_left])
+                    _, h2 = self.get_dims((bboxes[closest]))
+                    threshold = (h1+h2/2)**2
+                    if closest is not None and 0 <= lowest_dist <= threshold:
+                        lines[len(lines) - 1].append(bboxes[closest])
+                        used[closest] = True
+                        most_left = closest
+                    else:
+                        keep_going = False
 
         return lines
 
