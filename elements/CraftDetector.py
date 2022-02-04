@@ -81,7 +81,7 @@ class CraftDetector:
                                 closest = i
                                 lowest_dist = custom_distance(centers[most_left][1], centers[i][0])
 
-                if closest is not None and 0 < lowest_dist < 80:
+                if closest is not None and 0 <= lowest_dist <= 80:
                     lines[len(lines) - 1].append(bboxes[closest])
                     used[closest] = True
                     most_left = closest
