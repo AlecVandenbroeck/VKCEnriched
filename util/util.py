@@ -54,7 +54,7 @@ def draw_box_label_pillow(image, bbox, label, font=ImageFont.truetype("arial.ttf
     button_draw.text((5, 5), label, font=font)
 
     # put button on source image in position (0, 0)
-    image.paste(button_img, (x_min + x_offset, y_min - button_size[1] if x_offset == 0 else y_min))
+    image.paste(button_img, (x_min + x_offset, y_min - button_size[1]/2 if x_offset == 0 else y_min))
 
     return image
 
