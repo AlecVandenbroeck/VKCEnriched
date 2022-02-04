@@ -26,8 +26,8 @@ class TesseractTextExtractor:
         for prediction in text_dict:
             x_max = prediction['left'] + prediction['width']
             x_min = prediction['left']
-            y_max = prediction['top']
-            y_min = prediction['top'] + prediction['height']
+            y_max = prediction['top'] + prediction['height']
+            y_min = prediction['top']
             annotated_img = util.draw_box_label_pillow(annotated_img, [[x_min, y_min], [x_max, 0], [0, y_max], [0, 0]],
                                                        prediction['text'], color='green', x_offset=padding)
 
