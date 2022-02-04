@@ -98,6 +98,8 @@ class CraftDetector:
                         most_left = closest
                     else:
                         keep_going = False
+                else:
+                    keep_going = False
 
         return lines
 
