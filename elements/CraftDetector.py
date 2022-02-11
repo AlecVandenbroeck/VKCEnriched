@@ -61,7 +61,7 @@ class CraftDetector:
             if closest_index is None or lowest_distance > distance:
                 lowest_distance = distance
                 closest_index = j
-        return closest_index, lowest_distance
+        return closest_index
 
     def get_left_friend(self, centers, i):
         lowest_distance = -1
@@ -75,7 +75,7 @@ class CraftDetector:
             if closest_index is None or lowest_distance > distance:
                 lowest_distance = distance
                 closest_index = j
-        return closest_index, lowest_distance
+        return closest_index
 
     def cluster_lines_friend(self, bboxes):
         lines = []
