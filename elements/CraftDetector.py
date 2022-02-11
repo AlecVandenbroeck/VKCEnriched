@@ -10,7 +10,6 @@ class CraftDetector:
     def process(self, img):
         # run the detector
         bboxes, polys, heatmap = craft.detect_text(img)
-
         return bboxes, polys, heatmap
 
     def get_centers(self, bbox):
@@ -28,7 +27,6 @@ class CraftDetector:
         x_min = min([bbox[0][0], bbox[1][0], bbox[2][0], bbox[3][0]])
         x_max = max([bbox[0][0], bbox[1][0], bbox[2][0], bbox[3][0]])
         return x_max-x_min, y_max-y_min
-
 
     def get_line_bboxes(self, lines):
         lines_bboxes = []
@@ -50,6 +48,86 @@ class CraftDetector:
             y_max = int(max(y_coords))
             lines_bboxes.append([[x_min, y_min], [x_max, 0], [0, y_max], [0, 0]])
         return lines_bboxes
+
+    def get_right_friend(self, centers, i):
+        lowest_distance = -1
+        closest_index = None
+        right = centers[i][1]
+        for j in range(len(centers)):
+            if i == j:
+                continue
+            left = centers[j][0]
+            distance = custom_distance(left, right)
+            if closest_index is None or lowest_distance > distance:
+                lowest_distance = distance
+                closest_index = j
+        return closest_index, lowest_distance
+
+    def get_left_friend(self, centers, i):
+        lowest_distance = -1
+        closest_index = None
+        left = centers[i][0]
+        for j in range(len(centers)):
+            if i == j:
+                continue
+            right = centers[j][1]
+            distance = custom_distance(left, right)
+            if closest_index is None or lowest_distance > distance:
+                lowest_distance = distance
+                closest_index = j
+        return closest_index, lowest_distance
+
+    def cluster_lines_friend(self, bboxes):
+        lines = []
+        centers = []
+        for bbox in bboxes:
+            centers.append(self.get_centers(bbox))
+
+        used = [False] * len(centers)
+        outer_counter = 0
+        while used != [True] * len(centers):
+            outer_counter += 1
+            most_left = None
+            lowest_left = -1
+            for i in range(len(centers)):
+                if not used[i]:
+                    if most_left is None:
+                        most_left = i
+                        lowest_left = centers[i][0][0]
+                    else:
+                        if centers[i][0][0] < lowest_left:
+                            most_left = i
+                            lowest_left = centers[i][0][0]
+
+            lines.append([bboxes[most_left]])
+            used[most_left] = True
+            keep_going = True
+            while keep_going:
+                lowest_dist = -1
+                closest = None
+                for i in range(len(centers)):
+                    if not used[i]:
+                        if closest is None:
+                            closest = i
+                            lowest_dist = custom_distance(centers[most_left][1], centers[i][0])
+                        else:
+                            if custom_distance(centers[most_left][1], centers[i][0]) < lowest_dist and self.get_left_friend(centers, i) == most_left:
+                                closest = i
+                                lowest_dist = custom_distance(centers[most_left][1], centers[i][0])
+                if closest is not None:
+                    _, h1 = self.get_dims(bboxes[most_left])
+                    _, h2 = self.get_dims((bboxes[closest]))
+                    threshold = max([h1 + h2, 80])
+                    if closest is not None and 0 <= lowest_dist <= threshold:
+                        lines[len(lines) - 1].append(bboxes[closest])
+                        used[closest] = True
+                        most_left = closest
+                    else:
+                        keep_going = False
+                else:
+                    keep_going = False
+
+        return lines
 
     def cluster_lines(self, bboxes):
         lines = []

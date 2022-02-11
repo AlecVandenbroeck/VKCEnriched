@@ -1,6 +1,6 @@
 import cv2
 
-from PIL import Image, ImageFont, ImageDraw, ImageEnhance
+from PIL import Image, ImageFont, ImageDraw
 from collections import namedtuple
 import numpy as np
 
