@@ -117,7 +117,7 @@ class CraftDetector:
                 if closest is not None:
                     _, h1 = self.get_dims(bboxes[most_left])
                     _, h2 = self.get_dims((bboxes[closest]))
-                    threshold = h1 + h2 / 2
+                    threshold = (h1 + h2) * 3 / 2
                     if closest is not None and 0 <= lowest_dist <= threshold:
                         lines[len(lines) - 1].append(bboxes[closest])
                         used[closest] = True
