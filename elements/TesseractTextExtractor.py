@@ -4,7 +4,7 @@ from util import util
 
 
 class TesseractTextExtractor:
-    def TesseractTextExtractor(self):
+    def __init__(self):
         pass
 
     def process(self, img) -> list:
@@ -24,12 +24,14 @@ class TesseractTextExtractor:
         annotated_img = util.add_margin(annotated_img, 0, padding, 0, 0, (256, 256, 256))
 
         for prediction in text_dict:
-            x_max = prediction['left'] + prediction['width']
-            x_min = prediction['left']
-            y_max = prediction['top'] + prediction['height']
-            y_min = prediction['top']
-            annotated_img = util.draw_box_label_pillow(annotated_img, [[x_min, y_min], [x_max, 0], [0, y_max], [0, 0]],
-                                                       prediction['text'], color='green', x_offset=padding)
+            if prediction['text'] != '':
+                x_max = prediction['left'] + prediction['width']
+                x_min = prediction['left']
+                y_max = prediction['top'] + prediction['height']
+                y_min = prediction['top']
+                annotated_img = util.draw_box_label_pillow(annotated_img,
+                                                           [[x_min, y_min], [x_max, 0], [0, y_max], [0, 0]],
+                                                           prediction['text'], color='green', x_offset=padding)
 
         return annotated_img
 
@@ -41,3 +43,8 @@ class TesseractTextExtractor:
             y_min = prediction['top'] + prediction['height']
             util.draw_box(img, [[x_min, y_min], [x_max, 0], [0, y_max], [0, 0]])
         return img
+
+    def to_alto(self, text_dict) -> str:
+        alto_string = ""
+
+        return
