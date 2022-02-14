@@ -81,6 +81,7 @@ class CraftDetector:
         return closest_index
 
     def cluster_lines_friend(self, bboxes):
+        # TODO: take into account if there is a vertical line between 2 words?
         lines = []
         centers = []
         for bbox in bboxes:
