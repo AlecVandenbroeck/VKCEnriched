@@ -2,8 +2,11 @@ import craft
 import numpy as np
 
 
-def custom_distance(p1, p2):
-    return np.sqrt((p1[0] - p2[0]) ** 2 + 8 * (p1[1] - p2[1]) ** 2)
+def custom_distance(p1, p2, metric='euclidean'):
+    if metric == 'manhattan':
+        return abs(p1[0] - p2[0]) + 3 * abs(p1[1] - p2[1])
+    else:
+        return np.sqrt((p1[0] - p2[0]) ** 2 + 8 * (p1[1] - p2[1]) ** 2)
 
 
 class CraftDetector:
