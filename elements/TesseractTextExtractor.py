@@ -43,8 +43,3 @@ class TesseractTextExtractor:
             y_min = prediction['top'] + prediction['height']
             util.draw_box(img, [[x_min, y_min], [x_max, 0], [0, y_max], [0, 0]])
         return img
-
-    def to_alto(self, text_dict) -> str:
-        alto_string = ""
-
-        return
