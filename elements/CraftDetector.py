@@ -80,7 +80,7 @@ class CraftDetector:
                 closest_index = j
         return closest_index
 
-    def cluster_lines_friend(self, bboxes):
+    def cluster_lines_friend(self, bboxes, metric='euclidean'):
         # TODO: take into account if there is a vertical line between 2 words?
         lines = []
         centers = []
@@ -113,11 +113,11 @@ class CraftDetector:
                     if not used[i]:
                         if closest is None:
                             closest = i
-                            lowest_dist = custom_distance(centers[most_left][1], centers[i][0])
+                            lowest_dist = custom_distance(centers[most_left][1], centers[i][0], metric)
                         else:
-                            if custom_distance(centers[most_left][1], centers[i][0]) < lowest_dist and self.get_left_friend(centers, i) == most_left:
+                            if custom_distance(centers[most_left][1], centers[i][0], metric) < lowest_dist and self.get_left_friend(centers, i) == most_left:
                                 closest = i
-                                lowest_dist = custom_distance(centers[most_left][1], centers[i][0])
+                                lowest_dist = custom_distance(centers[most_left][1], centers[i][0], metric)
                 if closest is not None:
                     _, h1 = self.get_dims(bboxes[most_left])
                     _, h2 = self.get_dims((bboxes[closest]))
