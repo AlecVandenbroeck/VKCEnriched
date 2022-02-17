@@ -3,18 +3,18 @@ import numpy as np
 from util.util import segments_distance
 
 
-def custom_distance(p1, p2, metric='euclidean'):
+def custom_distance(p1, p2, metric='euclidean', metric_scaling=3):
     if metric == 'manhattan':
-        return abs(p1[0] - p2[0]) + 3 * abs(p1[1] - p2[1])
+        return abs(p1[0] - p2[0]) + metric_scaling * abs(p1[1] - p2[1])
     else:
-        return np.sqrt((p1[0] - p2[0]) ** 2 + 8 * (p1[1] - p2[1]) ** 2)
+        return np.sqrt((p1[0] - p2[0]) ** 2 + metric_scaling ** 2 * (p1[1] - p2[1]) ** 2)
 
 
 class CraftDetector:
     def __init__(self):
         self.bboxes = None
         self.lines_bboxes = None
-        self.par_bboxes
+        self.par_bboxes = None
         self.polys = None
         self.heatmap = None
         self.lines = None
@@ -95,7 +95,7 @@ class CraftDetector:
                 closest_index = j
         return closest_index
 
-    def cluster_lines_friend(self, metric='euclidean'):
+    def cluster_lines_friend(self, metric='euclidean', metric_scaling=3):
         # TODO: take into account if there is a vertical line between 2 words?
         lines = []
         centers = []
@@ -128,12 +128,14 @@ class CraftDetector:
                     if not used[i]:
                         if closest is None:
                             closest = i
-                            lowest_dist = custom_distance(centers[most_left][1], centers[i][0], metric)
+                            lowest_dist = custom_distance(centers[most_left][1], centers[i][0], metric, metric_scaling)
                         else:
                             if custom_distance(centers[most_left][1], centers[i][0],
-                                               metric) < lowest_dist and self.get_left_friend(centers, i) == most_left:
+                                               metric, metric_scaling) < lowest_dist and self.get_left_friend(centers,
+                                                                                                              i) == most_left:
                                 closest = i
-                                lowest_dist = custom_distance(centers[most_left][1], centers[i][0], metric)
+                                lowest_dist = custom_distance(centers[most_left][1], centers[i][0], metric,
+                                                              metric_scaling)
                 if closest is not None:
                     _, h1 = self.get_dims(self.bboxes[most_left])
                     _, h2 = self.get_dims((self.bboxes[closest]))
