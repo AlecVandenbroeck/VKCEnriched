@@ -3,6 +3,7 @@ import os
 import wget
 import json
 
+
 class IIIFScraper:
     def __init__(self, manifest_url: str):
         self.manifest_url = manifest_url
