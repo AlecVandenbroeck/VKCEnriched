@@ -1,6 +1,8 @@
 import craft
 import numpy as np
 from util.util import segments_distance
+from util.util import Rectangle
+from util.util import get_overlapping_surface_area
 
 
 def custom_distance(p1, p2, metric='euclidean', metric_scaling=3):
@@ -69,12 +71,14 @@ class CraftDetector:
         if self.lines is None:
             self.lines = self.cluster_lines_friend()
         self.lines_bboxes = self.transform_to_bboxes(self.lines)
+        self.lines_bboxes = self.nms(self.lines_bboxes)
         return self.lines_bboxes
 
     def get_par_bboxes(self):
         if self.paragraphs is None:
             self.paragraphs = self.cluster_paragraphs()
         self.par_bboxes = self.transform_to_bboxes(self.paragraphs)
+        self.par_bboxes = self.nms(self.par_bboxes)
         return self.par_bboxes
 
     @staticmethod
@@ -272,3 +276,21 @@ class CraftDetector:
         img_boxed = craft.show_bounding_boxes(img, bboxes)
 
         return img_boxed
+
+    @staticmethod
+    def nms(bboxes):
+        filtered_bboxes = []
+        for i in range(len(bboxes)):
+            should_stay = True
+            a = Rectangle(bboxes[i][0][0], bboxes[i][0][1], bboxes[i][1][0], bboxes[i][2][1])
+            surface = get_overlapping_surface_area(a, a)
+            for j in range(len(bboxes)):
+                if i != j:
+                    b = Rectangle(bboxes[j][0][0], bboxes[j][0][1], bboxes[j][1][0], bboxes[j][2][1])
+                    overlap = get_overlapping_surface_area(a, b) / surface
+                    if overlap > 0.9:
+                        should_stay = False
+                        break
+                if should_stay:
+                    filtered_bboxes.append(bboxes[i])
+        return filtered_bboxes
