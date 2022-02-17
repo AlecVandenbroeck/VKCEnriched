@@ -288,9 +288,10 @@ class CraftDetector:
                 if i != j:
                     b = Rectangle(bboxes[j][0][0], bboxes[j][0][1], bboxes[j][1][0], bboxes[j][2][1])
                     overlap = get_overlapping_surface_area(a, b) / surface
+                    print(overlap)
                     if overlap > 0.9:
                         should_stay = False
                         break
-                if should_stay:
-                    filtered_bboxes.append(bboxes[i])
+            if should_stay:
+                filtered_bboxes.append(bboxes[i])
         return filtered_bboxes
