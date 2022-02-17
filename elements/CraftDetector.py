@@ -62,7 +62,7 @@ class CraftDetector:
             x_max = int(max(x_coords))
             y_min = int(min(y_coords))
             y_max = int(max(y_coords))
-            res.append([[x_min, y_min], [x_max, 0], [0, y_max], [0, 0]])
+            res.append([[x_min, y_min], [x_max, y_min], [x_max, y_max], [x_min, y_max]])
         return res
 
     def get_line_bboxes(self):
