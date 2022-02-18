@@ -151,3 +151,22 @@ def point_segment_distance(px, py, x1, y1, x2, y2):
         dy = py - near_y
 
     return math.hypot(dx, dy)
+
+
+def reskew_tesseract_output(extraction_output, image_deskewer):
+    deskewed_extraction_output = []
+    for i in extraction_output:
+        top_left = [i['left'], i['top']]
+        top_right = [i['left'] + i['width'], i['top']]
+        bottom_left = [i['left'], i['top'] + i['height']]
+        bottom_right = [i['left'] + i['width'], i['top'] + i['height']]
+        top_left_deskewed = image_deskewer.inverse_transform_coords(np.array([[top_left]]))
+        top_right_deskewed = image_deskewer.inverse_transform_coords(np.array([[top_right]]))
+        bottom_left_deskewed = image_deskewer.inverse_transform_coords(np.array([[bottom_left]]))
+        bottom_right_deskewed = image_deskewer.inverse_transform_coords(np.array([[bottom_right]]))
+        i['left'] = int(min([top_left_deskewed[0][0][0], top_right_deskewed[0][0][0], bottom_left_deskewed[0][0][0], bottom_right_deskewed[0][0][0]]))
+        i['top'] = int(min([top_left_deskewed[0][0][1], top_right_deskewed[0][0][1], bottom_left_deskewed[0][0][1], bottom_right_deskewed[0][0][1]]))
+        i['width'] = int(max([top_left_deskewed[0][0][0], top_right_deskewed[0][0][0], bottom_left_deskewed[0][0][0], bottom_right_deskewed[0][0][0]]) - i['left'])
+        i['height'] = int(max([top_left_deskewed[0][0][1], top_right_deskewed[0][0][1], bottom_left_deskewed[0][0][1], bottom_right_deskewed[0][0][1]]) - i['top'])
+        deskewed_extraction_output.append(i)
+    return deskewed_extraction_output
