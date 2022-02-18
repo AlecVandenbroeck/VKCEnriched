@@ -35,7 +35,7 @@ class TesseractTextExtractor:
                 annotated_img = util.draw_box_label_pillow(annotated_img,
                                                            [[x_min, y_min], [x_max, 0], [0, y_max], [0, 0]],
                                                            prediction['text'], text_size=prediction['text_size'],
-                                                           color='green', x_offset=padding)
+                                                           color=(256, 256, 256, 0), x_offset=padding)
 
         return annotated_img
 
