@@ -10,7 +10,7 @@ class TesseractTextExtractor:
 
     @TimeLogger
     def process(self, img) -> list:
-        text_data = pytesseract.image_to_data(img, lang='fra', output_type=pytesseract.Output.DICT, config='--psm 6')
+        text_data = pytesseract.image_to_data(img, lang='nld+fra', output_type=pytesseract.Output.DICT, config='--psm 6')
         text_dict = [
             dict(level=text_data['level'][x], page_num=text_data['page_num'][x], block_num=text_data['block_num'][x],
                  par_num=text_data['par_num'][x], line_num=text_data['line_num'][x], word_num=text_data['word_num'][x],
