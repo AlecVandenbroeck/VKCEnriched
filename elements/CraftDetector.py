@@ -21,8 +21,10 @@ class CraftDetector:
         self.heatmap = None
         self.lines = None
         self.paragraphs = None
+        self.dims = None
 
     def process(self, img):
+        self.dims = img.shape[:1]
         # run the detector
         self.bboxes, self.polys, self.heatmap = craft.detect_text(img)
         return self.bboxes, self.polys, self.heatmap
@@ -45,8 +47,7 @@ class CraftDetector:
         x_min, y_min, x_max, y_max = self.get_extremes(bbox)
         return x_max - x_min, y_max - y_min
 
-    @staticmethod
-    def transform_to_bboxes(input_arr):
+    def transform_to_bboxes(self, input_arr):
         res = []
         for i in input_arr:
             x_coords = []
@@ -60,10 +61,10 @@ class CraftDetector:
                 y_coords.append(j[1][1])
                 y_coords.append(j[2][1])
                 y_coords.append(j[3][1])
-            x_min = int(min(x_coords))
-            x_max = int(max(x_coords))
-            y_min = int(min(y_coords))
-            y_max = int(max(y_coords))
+            x_min = int(max([0, min(x_coords)]))
+            x_max = int(min([self.dims[1], max(x_coords)]))
+            y_min = int(max([0, min(y_coords)]))
+            y_max = int(min([self.dims[0], max(y_coords)]))
             res.append([[x_min, y_min], [x_max, y_min], [x_max, y_max], [x_min, y_max]])
         return res
 
