@@ -1,44 +1,6 @@
 from time import time
 
 
-def print_time(func):
-    """
-    A wrapper function to print the execution time of a function call.
-    :param func: The function to be wrapped
-    :return: The function wrapper
-    """
-    def wrapper(*args, **kwargs):
-        start_time = time()
-        result = func(*args, **kwargs)
-        end_time = time()
-        print("Method Name - {0}, Args - {1}, Kwargs - {2}, Execution Time - {3:.2f}".format(
-            func.__name__,
-            args,
-            kwargs,
-            end_time - start_time
-        ))
-        return result
-    return wrapper
-
-
-def log_time(func):
-    """
-    A wrapper function to log the execution time of a function call.
-    :param func: The function to be wrapped
-    :return: The function wrapper
-    """
-    def wrapper(*args, **kwargs):
-        start_time = time()
-        result = func(*args, **kwargs)
-        end_time = time()
-        args[0].time_statistic += (end_time - start_time)
-        return result
-    return wrapper
-
-
-# Python program showing
-# use of __call__() method
-
 class TimeLogger:
     time_logs = dict()
 
