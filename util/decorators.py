@@ -1,4 +1,5 @@
 from time import time
+from functools import update_wrapper, partial
 
 
 class TimeLogger:
@@ -6,13 +7,18 @@ class TimeLogger:
 
     def __init__(self, function):
         self.function = function
+        update_wrapper(self, function)
 
-    def __call__(self, *args, **kwargs):
+    def __get__(self, obj, objtype):
+        """Support instance methods."""
+        return partial(self.__call__, obj)
+
+    def __call__(self, obj, *args, **kwargs):
         identifier = f"{self.function.__qualname__}"
         # We can add some code
         # before function call
         start_time = time()
-        res = self.function(self, *args, **kwargs)
+        res = self.function(obj, *args, **kwargs)
         # We can also add some code
         # after function call.
         end_time = time()
