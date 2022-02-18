@@ -24,7 +24,7 @@ class CraftDetector:
         self.dims = None
 
     def process(self, img):
-        self.dims = img.shape[:1]
+        self.dims = img.shape[:2]
         # run the detector
         self.bboxes, self.polys, self.heatmap = craft.detect_text(img)
         return self.bboxes, self.polys, self.heatmap
