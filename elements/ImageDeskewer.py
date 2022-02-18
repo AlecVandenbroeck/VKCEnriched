@@ -62,6 +62,6 @@ class ImageDeskewer:
         inverse_rotation_matrix[1, 2] += (self.new_width - self.original_width) / 2
         inverse_rotation_matrix[0, 2] += (self.new_height - self.original_height) / 2
         rotated_coords = cv2.transform(coords, inverse_rotation_matrix)
-        rotated_coords[0] = rotated_coords[0] - (self.new_width - self.original_width)
-        rotated_coords[1] = rotated_coords[1] - (self.new_height - self.original_height)
+        rotated_coords[0][0][0] = rotated_coords[0][0][0] - (self.new_width - self.original_width)
+        rotated_coords[0][0][1] = rotated_coords[0][0][1] - (self.new_height - self.original_height)
         return rotated_coords
