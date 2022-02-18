@@ -51,7 +51,8 @@ class ImageDeskewer:
 
     def transform(self, image: np.ndarray) -> Union[np.ndarray, None]:
         if self.initialized:
-            return cv2.warpAffine(image, self.rotation_matrix, (int(round(self.new_height)), int(round(self.new_width))), borderValue=(0, 0, 0))
+            return cv2.warpAffine(image, self.rotation_matrix, (int(round(self.new_height)),
+                                                                int(round(self.new_width))), borderValue=(0, 0, 0))
         else:
             print("ImageDeskewer has to be initialized using the fit function before calling transform")
             return None
@@ -61,6 +62,6 @@ class ImageDeskewer:
         inverse_rotation_matrix[1, 2] += (self.new_width - self.original_width) / 2
         inverse_rotation_matrix[0, 2] += (self.new_height - self.original_height) / 2
         rotated_coords = cv2.transform(coords, inverse_rotation_matrix)
-        rotated_coords[0] -= (self.new_width - self.original_width)
-        rotated_coords[1] -= (self.new_height - self.original_height)
+        rotated_coords[0] = rotated_coords[0] - (self.new_width - self.original_width)
+        rotated_coords[1] = rotated_coords[1] - (self.new_height - self.original_height)
         return rotated_coords
