@@ -6,6 +6,7 @@ import numpy as np
 
 from deskew import determine_skew
 
+from util.decorators import TimeLogger
 
 def rotate(
         image: np.ndarray, angle: float, background: Union[int, Tuple[int, int, int]]
@@ -35,6 +36,7 @@ class ImageDeskewer:
         self.center = None
         self.initialized = False
 
+    @TimeLogger
     def fit(self, img: np.ndarray) -> None:
         grayscale = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         self.angle = determine_skew(grayscale, num_angles=4500, num_peaks=50)
@@ -49,6 +51,7 @@ class ImageDeskewer:
         self.initialized = True
         return
 
+    @TimeLogger
     def transform(self, image: np.ndarray) -> Union[np.ndarray, None]:
         if self.initialized:
             return cv2.warpAffine(image, self.rotation_matrix, (int(round(self.new_height)),

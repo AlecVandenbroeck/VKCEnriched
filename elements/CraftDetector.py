@@ -3,7 +3,7 @@ import numpy as np
 from util.util import segments_distance
 from util.util import Rectangle
 from util.util import get_overlapping_surface_area
-
+from util.decorators import TimeLogger
 
 def custom_distance(p1, p2, metric='euclidean', metric_scaling=3):
     if metric == 'manhattan':
@@ -23,6 +23,7 @@ class CraftDetector:
         self.paragraphs = None
         self.dims = None
 
+    @TimeLogger
     def process(self, img):
         self.dims = img.shape[:2]
         # run the detector
@@ -112,6 +113,7 @@ class CraftDetector:
                 closest_index = j
         return closest_index
 
+    @TimeLogger
     def cluster_lines_friend(self, metric='euclidean', metric_scaling=3):
         # TODO: take into account if there is a vertical line between 2 words?
         self.lines = []
@@ -220,6 +222,7 @@ class CraftDetector:
     #
     #     return lines
 
+    @TimeLogger
     def cluster_paragraphs(self):
         if self.lines_bboxes is None:
             self.get_line_bboxes()

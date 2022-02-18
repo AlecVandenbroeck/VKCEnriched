@@ -1,12 +1,14 @@
 from PIL import Image
 import pytesseract
 from util import util
+from util.decorators import TimeLogger
 
 
 class TesseractTextExtractor:
     def __init__(self):
         pass
 
+    @TimeLogger
     def process(self, img) -> list:
         text_data = pytesseract.image_to_data(img, lang='fra', output_type=pytesseract.Output.DICT, config='--psm 6')
         text_dict = [
