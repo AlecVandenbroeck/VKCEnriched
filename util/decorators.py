@@ -12,7 +12,7 @@ class TimeLogger:
         # We can add some code
         # before function call
         start_time = time()
-        res = self.function(*args, **kwargs)
+        res = self.function(self, *args, **kwargs)
         # We can also add some code
         # after function call.
         end_time = time()
