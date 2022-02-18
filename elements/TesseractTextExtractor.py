@@ -13,7 +13,8 @@ class TesseractTextExtractor:
             dict(level=text_data['level'][x], page_num=text_data['page_num'][x], block_num=text_data['block_num'][x],
                  par_num=text_data['par_num'][x], line_num=text_data['line_num'][x], word_num=text_data['word_num'][x],
                  left=text_data['left'][x], top=text_data['top'][x], width=text_data['width'][x],
-                 height=text_data['height'][x], conf=text_data['conf'][x], text=text_data['text'][x]) for x in
+                 height=text_data['height'][x], conf=text_data['conf'][x], text=text_data['text'][x],
+                 text_size=text_data['height'][x]) for x in
             range(len(text_data['block_num']))]
         return text_dict
 
@@ -31,7 +32,8 @@ class TesseractTextExtractor:
                 y_min = prediction['top']
                 annotated_img = util.draw_box_label_pillow(annotated_img,
                                                            [[x_min, y_min], [x_max, 0], [0, y_max], [0, 0]],
-                                                           prediction['text'], color='green', x_offset=padding)
+                                                           prediction['text'], text_size=prediction['text_size'],
+                                                           color='green', x_offset=padding)
 
         return annotated_img
 

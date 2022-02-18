@@ -37,17 +37,17 @@ def draw_box_label(image, bbox, label, font=cv2.FONT_HERSHEY_SIMPLEX, font_scale
     draw_label(image, (bbox[0][0], bbox[0][1]), label, font, font_scale, thickness)
 
 
-def draw_box_label_pillow(image, bbox, label, font="arial.ttf", color='white', x_offset=0):
+def draw_box_label_pillow(image, bbox, label, text_size=None, font="arial.ttf", color='white', x_offset=0):
     x_min = int(bbox[0][0])
     y_min = int(bbox[0][1])
     y_max = int(bbox[2][1])
 
     # get text size
-    font = ImageFont.truetype(font, y_max-y_min)
-    text_size = font.getsize(label)
+    font = ImageFont.truetype(font, text_size)
+    font_text_size = font.getsize(label)
 
     # set button size + 10px margins
-    button_size = (text_size[0]+6, text_size[1]+6)
+    button_size = (font_text_size[0]+6, font_text_size[1]+6)
 
     # create image with correct size and black background
     button_img = Image.new('RGBA', button_size, color)
