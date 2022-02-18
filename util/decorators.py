@@ -39,7 +39,7 @@ def log_time(func):
 # Python program showing
 # use of __call__() method
 
-class MyDecorator:
+class TimeLogger:
     time_logs = dict()
 
     def __init__(self, function):
