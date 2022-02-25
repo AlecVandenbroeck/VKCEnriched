@@ -122,6 +122,10 @@ class CraftDetector:
         for bbox in self.bboxes:
             centers.append(self.get_centers(bbox))
 
+        left_friends = []
+        for c in range(len(centers)):
+            left_friends.append(self.get_left_friend(centers, c))
+
         used = [False] * len(centers)
         outer_counter = 0
         while used != [True] * len(centers):
@@ -151,8 +155,7 @@ class CraftDetector:
                             lowest_dist = custom_distance(centers[most_left][1], centers[i][0], metric, metric_scaling)
                         else:
                             if custom_distance(centers[most_left][1], centers[i][0],
-                                               metric, metric_scaling) < lowest_dist and self.get_left_friend(centers,
-                                                                                                              i) == most_left:
+                                               metric, metric_scaling) < lowest_dist and left_friends[i] == most_left:
                                 closest = i
                                 lowest_dist = custom_distance(centers[most_left][1], centers[i][0], metric,
                                                               metric_scaling)
