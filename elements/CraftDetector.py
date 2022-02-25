@@ -4,7 +4,7 @@ from util.util import segments_distance
 from util.util import Rectangle
 from util.util import get_overlapping_surface_area
 from util.decorators import TimeLogger
-from functools import cache
+from functools import lru_cache
 
 
 def custom_distance(p1, p2, metric='euclidean', metric_scaling=3):
@@ -86,7 +86,7 @@ class CraftDetector:
         return self.par_bboxes
 
     @staticmethod
-    @cache
+    @lru_cache(1024)
     def get_right_friend(centers, i):
         lowest_distance = -1
         closest_index = None
@@ -102,7 +102,7 @@ class CraftDetector:
         return closest_index
 
     @staticmethod
-    @cache
+    @lru_cache(1024)
     def get_left_friend(centers, i):
         lowest_distance = -1
         closest_index = None
