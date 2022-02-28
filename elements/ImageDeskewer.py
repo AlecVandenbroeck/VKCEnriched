@@ -37,9 +37,9 @@ class ImageDeskewer:
         self.initialized = False
 
     @TimeLogger
-    def fit(self, img: np.ndarray) -> None:
+    def fit(self, img: np.ndarray, num_angles=2048, num_peaks=50) -> None:
         grayscale = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        self.angle = determine_skew(grayscale, num_angles=4500, num_peaks=50)
+        self.angle = determine_skew(grayscale, num_angles=num_angles, num_peaks=num_peaks)
         self.original_width, self.original_height = img.shape[:2]
         self.angle_radian = math.radians(self.angle)
         self.new_width = abs(np.sin(self.angle_radian) * self.original_height) + abs(np.cos(self.angle_radian) * self.original_width)
