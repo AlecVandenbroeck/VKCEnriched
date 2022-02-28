@@ -268,7 +268,7 @@ class CraftDetector:
                     h1 = self.lines_bboxes[most_top][2][1] - self.lines_bboxes[most_top][0][1]
                     h2 = self.lines_bboxes[closest][2][1] - self.lines_bboxes[closest][0][1]
                     threshold = (h1 + h2) / 4
-                    if closest is not None and 0 <= lowest_dist <= threshold:
+                    if closest is not None and 0 <= lowest_dist <= threshold and h2*2/3 <= h1 <= h2*1.5:
                         self.paragraphs[len(self.paragraphs) - 1].append(self.lines_bboxes[closest])
                         used[closest] = True
                         most_top = closest
