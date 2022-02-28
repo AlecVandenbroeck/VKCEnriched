@@ -38,4 +38,23 @@ class TimeLogger:
         for i in cls.time_logs:
             total_time += cls.time_logs[i]
         for i in cls.time_logs:
-            print(f"{i}: {cls.time_logs[i]:.2f} ({(cls.time_logs[i] / total_time * 100):.2f}%)")
+            time_hours = int(cls.time_logs[i]//3600)
+            time_rem = cls.time_logs[i] % 3600
+            time_mins = int(time_rem//60)
+            time_secs = time_rem % 60
+            if time_hours != 0:
+                print(f"{i}: {time_hours}h{time_mins}m{time_secs:.2f}s ({(cls.time_logs[i] / total_time * 100):.2f}%)")
+            elif time_mins != 0:
+                print(f"{i}: {time_mins}m{time_secs:.2f}s ({(cls.time_logs[i] / total_time * 100):.2f}%)")
+            else:
+                print(f"{i}: {time_secs:.2f}s ({(cls.time_logs[i] / total_time * 100):.2f}%)")
+        total_time_hours = int(total_time // 3600)
+        total_time_rem = total_time % 3600
+        total_time_mins = int(total_time_rem // 60)
+        total_time_secs = total_time_rem % 60
+        if total_time_hours != 0:
+            print(f"Total time: {total_time_hours}h{total_time_mins}m{total_time_secs:.2f}s")
+        elif total_time_mins != 0:
+            print(f"Total time: {total_time_mins}m{total_time_secs:.2f}s")
+        else:
+            print(f"Total time: {total_time_secs:.2f}s")
