@@ -18,8 +18,6 @@ class CraftDetector:
         self.bboxes = None
         self.lines_bboxes = None
         self.par_bboxes = None
-        self.polys = None
-        self.heatmap = None
         self.lines = None
         self.paragraphs = None
         self.dims = None
@@ -28,8 +26,8 @@ class CraftDetector:
     def process(self, img):
         self.dims = img.shape[:2]
         # run the detector
-        self.bboxes, self.polys, self.heatmap = craft.detect_text(img)
-        return self.bboxes, self.polys, self.heatmap
+        self.bboxes = craft.detect_text(img)
+        return self.bboxes
 
     @staticmethod
     def get_extremes(bbox):
@@ -286,7 +284,7 @@ class CraftDetector:
         return img_boxed
 
     @staticmethod
-    def nms(bboxes):
+    def nms(bboxes, overlap_threshold=0.75):
         filtered_bboxes = []
         for i in range(len(bboxes)):
             should_stay = True
@@ -296,7 +294,7 @@ class CraftDetector:
                 if i != j:
                     b = Rectangle(bboxes[j][0][0], bboxes[j][0][1], bboxes[j][1][0], bboxes[j][2][1])
                     overlap = get_overlapping_surface_area(a, b) / surface
-                    if overlap > 0.75:
+                    if overlap > overlap_threshold:
                         should_stay = False
                         break
             if should_stay:
