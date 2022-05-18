@@ -170,3 +170,21 @@ def reskew_tesseract_output(extraction_output, image_deskewer):
         i['height'] = int(max([top_left_deskewed[0][0][1], top_right_deskewed[0][0][1], bottom_left_deskewed[0][0][1], bottom_right_deskewed[0][0][1]]) - i['top'])
         deskewed_extraction_output.append(i)
     return deskewed_extraction_output
+
+
+def line_intersects_text(img, p1, p2, text_bboxes):
+    m = (p2[1] - p1[1]) / (p2[0] - p1[0])
+    x_upper = (-1/m)*p1[1] + p1[0]
+    x_lower = (1/m)*(img.shape[1]-p1[1]) + p1[0]
+
+    intersects = False
+    for text_bbox in text_bboxes:
+        si_1 = segments_intersect(x_upper, 0, x_lower, img.shape[1], text_bbox[0][0], text_bbox[0][1], text_bbox[1][0], text_bbox[1][1])
+        si_2 = segments_intersect(x_upper, 0, x_lower, img.shape[1], text_bbox[1][0], text_bbox[1][1], text_bbox[2][0], text_bbox[2][1])
+        si_3 = segments_intersect(x_upper, 0, x_lower, img.shape[1], text_bbox[2][0], text_bbox[2][1], text_bbox[3][0], text_bbox[3][1])
+        si_4 = segments_intersect(x_upper, 0, x_lower, img.shape[1], text_bbox[3][0], text_bbox[3][1], text_bbox[0][0], text_bbox[0][1])
+        if si_1 or si_2 or si_3 or si_4:
+            intersects = True
+            break
+
+    return intersects

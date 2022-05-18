@@ -41,6 +41,8 @@ class ImageDeskewer:
         grayscale = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         self.angle = determine_skew(grayscale, num_angles=num_angles, num_peaks=num_peaks)
         self.original_width, self.original_height = img.shape[:2]
+        if self.angle is None:
+            self.angle = 0
         self.angle_radian = math.radians(self.angle)
         self.new_width = abs(np.sin(self.angle_radian) * self.original_height) + abs(np.cos(self.angle_radian) * self.original_width)
         self.new_height = abs(np.sin(self.angle_radian) * self.original_width) + abs(np.cos(self.angle_radian) * self.original_height)
