@@ -63,8 +63,6 @@ class ImageDeskewer:
             return None
 
     def inverse_transform_coords(self, coords):
-        inverse_rotation_matrix = cv2.getRotationMatrix2D(self.center, -self.angle, 1.0)
-        inverse_rotation_matrix[1, 2] -= (self.new_width - self.original_width) / 2
-        inverse_rotation_matrix[0, 2] -= (self.new_height - self.original_height) / 2
+        inverse_rotation_matrix = cv2.invertAffineTransform(self.rotation_matrix)
         rotated_coords = cv2.transform(coords, inverse_rotation_matrix)
         return rotated_coords
