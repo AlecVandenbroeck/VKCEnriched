@@ -73,6 +73,8 @@ class CraftDetector:
             self.lines = self.cluster_lines_friend()
         self.lines_bboxes = self.transform_to_bboxes(self.lines)
         self.lines_bboxes = self.nms(self.lines_bboxes)
+        for x in self.lines_bboxes:
+            x[2][1] = min(x[2][1] + (x[1][0] - x[0][0]), self.dims[0])
         return self.lines_bboxes
 
     def get_par_bboxes(self):
@@ -113,7 +115,7 @@ class CraftDetector:
         return closest_index
 
     @TimeLogger
-    def cluster_lines_friend(self, metric='euclidean', metric_scaling=3):
+    def cluster_lines_friend(self, metric='euclidean', metric_scaling=3, threshold_scaling=1):
         # TODO: take into account if there is a vertical line between 2 words?
         self.lines = []
         centers = []
@@ -160,7 +162,7 @@ class CraftDetector:
                 if closest is not None:
                     _, h1 = self.get_dims(self.bboxes[most_left])
                     _, h2 = self.get_dims((self.bboxes[closest]))
-                    threshold = (h1 + h2)
+                    threshold = (h1 + h2) * threshold_scaling
                     if closest is not None and 0 <= lowest_dist <= threshold:
                         self.lines[len(self.lines) - 1].append(self.bboxes[closest])
                         used[closest] = True
@@ -284,7 +286,7 @@ class CraftDetector:
         return img_boxed
 
     @staticmethod
-    def nms(bboxes, overlap_threshold=0.75):
+    def nms(bboxes, overlap_threshold=0.6):
         filtered_bboxes = []
         for i in range(len(bboxes)):
             should_stay = True
