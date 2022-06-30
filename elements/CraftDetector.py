@@ -27,6 +27,7 @@ class CraftDetector:
         self.dims = img.shape[:2]
         # run the detector
         self.bboxes = craft.detect_text(img)
+        self.bboxes = [x for x in self.bboxes if self.get_dims(x)[0] * 3 > self.get_dims(x)[1]]
         return self.bboxes
 
     @staticmethod
