@@ -21,6 +21,7 @@ class CraftDetector:
         self.lines = None
         self.paragraphs = None
         self.dims = None
+        self.used = None
 
     @TimeLogger
     def process(self, img):
@@ -265,7 +266,7 @@ class CraftDetector:
                         h1 = self.lines_bboxes[most_top][2][1] - self.lines_bboxes[most_top][0][1]
                         h2 = self.lines_bboxes[i][2][1] - self.lines_bboxes[i][0][1]
                         threshold = (h1 + h2) / 4
-                        if dist < threshold and h2*1/2 <= h1 <= h2*2:
+                        if dist < threshold and h2 * 1 / 2 <= h1 <= h2 * 2:
                             closest.append(i)
                 if len(closest) != 0:
                     for j in closest:
@@ -276,6 +277,56 @@ class CraftDetector:
                 else:
                     keep_going = False
 
+        return self.paragraphs
+
+    @TimeLogger
+    def cluster_paragraphs_2(self, first_call=True, starting_point=None):
+        if self.lines_bboxes is None:
+            self.get_line_bboxes()
+
+        # Initialize matrix that keeps track of which line bboxes have been assigned to a paragraph already
+        if first_call:
+            self.paragraphs = []
+            self.used = [False] * len(self.lines_bboxes)
+
+        # Find a new entry to start propagating from
+        if starting_point is None:
+            for i in range(len(self.used)):
+                if not self.used[i]:
+                    starting_point = i
+                    break
+            if starting_point is None:
+                return self.paragraphs
+            # Add this bbox as a new paragraph and indicate it has been assigned to a paragraph
+            self.paragraphs.append([self.lines_bboxes[starting_point]])
+            self.used[starting_point] = True
+        else:
+            # Add this bbox to the current paragraph and indicate it has been assigned to a paragraph
+            self.paragraphs[-1].append(self.lines_bboxes[starting_point])
+            self.used[starting_point] = True
+
+        for i in range(len(self.lines_bboxes)):
+            if not self.used[i]:
+                # Calculate both the distance downwards, as well as upwards
+                up_dist = segments_distance(self.lines_bboxes[starting_point][0][0],
+                                            self.lines_bboxes[starting_point][2][1],
+                                            self.lines_bboxes[starting_point][1][0],
+                                            self.lines_bboxes[starting_point][2][1],
+                                            self.lines_bboxes[i][0][0], self.lines_bboxes[i][0][1],
+                                            self.lines_bboxes[i][1][0], self.lines_bboxes[i][0][1])
+                down_dist = segments_distance(self.lines_bboxes[starting_point][0][0],
+                                              self.lines_bboxes[starting_point][0][1],
+                                              self.lines_bboxes[starting_point][1][0],
+                                              self.lines_bboxes[starting_point][0][1],
+                                              self.lines_bboxes[i][0][0], self.lines_bboxes[i][2][1],
+                                              self.lines_bboxes[i][1][0], self.lines_bboxes[i][2][1])
+                h1 = self.lines_bboxes[starting_point][2][1] - self.lines_bboxes[starting_point][0][1]
+                h2 = self.lines_bboxes[i][2][1] - self.lines_bboxes[i][0][1]
+                threshold = (h1 + h2) / 4
+                if (up_dist < threshold or down_dist < threshold) and h2 * 1 / 2 <= h1 <= h2 * 2:
+                    self.cluster_paragraphs_2(first_call=False, starting_point=i)
+
+        self.cluster_paragraphs_2(first_call=False, starting_point=None)
         return self.paragraphs
 
     @staticmethod
