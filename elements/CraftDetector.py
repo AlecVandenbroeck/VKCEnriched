@@ -265,7 +265,7 @@ class CraftDetector:
                         h1 = self.lines_bboxes[most_top][2][1] - self.lines_bboxes[most_top][0][1]
                         h2 = self.lines_bboxes[i][2][1] - self.lines_bboxes[i][0][1]
                         threshold = (h1 + h2) / 4
-                        if (len(closest) == 0 or dist < threshold) and h2*1/2 <= h1 <= h2*2:
+                        if dist < threshold and h2*1/2 <= h1 <= h2*2:
                             closest.append(i)
                 if len(closest) != 0:
                     for j in closest:
