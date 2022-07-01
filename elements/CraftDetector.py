@@ -253,28 +253,26 @@ class CraftDetector:
             self.paragraphs.append([self.lines_bboxes[most_top]])
             used[most_top] = True
             keep_going = True
+
             while keep_going:
-                lowest_dist = -1
-                closest = None
+                closest = []
                 for i in range(len(self.lines_bboxes)):
                     if not used[i]:
                         dist = segments_distance(self.lines_bboxes[most_top][0][0], self.lines_bboxes[most_top][2][1],
                                                  self.lines_bboxes[most_top][1][0], self.lines_bboxes[most_top][2][1],
                                                  self.lines_bboxes[i][0][0], self.lines_bboxes[i][0][1],
                                                  self.lines_bboxes[i][1][0], self.lines_bboxes[i][0][1])
-                        if closest is None or dist < lowest_dist:
-                            closest = i
-                            lowest_dist = dist
-                if closest is not None:
-                    h1 = self.lines_bboxes[most_top][2][1] - self.lines_bboxes[most_top][0][1]
-                    h2 = self.lines_bboxes[closest][2][1] - self.lines_bboxes[closest][0][1]
-                    threshold = (h1 + h2) / 4
-                    if closest is not None and 0 <= lowest_dist <= threshold and h2*1/2 <= h1 <= h2*2:
-                        self.paragraphs[len(self.paragraphs) - 1].append(self.lines_bboxes[closest])
-                        used[closest] = True
-                        most_top = closest
-                    else:
-                        keep_going = False
+                        h1 = self.lines_bboxes[most_top][2][1] - self.lines_bboxes[most_top][0][1]
+                        h2 = self.lines_bboxes[closest][2][1] - self.lines_bboxes[closest][0][1]
+                        threshold = (h1 + h2) / 4
+                        if (len(closest) == 0 or dist < threshold) and h2*1/2 <= h1 <= h2*2:
+                            closest.append(i)
+                if len(closest) != 0:
+                    for j in closest:
+                        self.paragraphs[len(self.paragraphs) - 1].append(self.lines_bboxes[j])
+                        used[j] = True
+                    # TODO: make this recursive?
+                    most_top = closest[0]
                 else:
                     keep_going = False
 
