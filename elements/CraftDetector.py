@@ -76,6 +76,8 @@ class CraftDetector:
         self.lines_bboxes = self.transform_to_bboxes(self.lines)
         self.lines_bboxes = self.nms(self.lines_bboxes)
         for x in self.lines_bboxes:
+            # TODO: finetune this
+            
             x[1][0] = int(min(x[1][0] + (x[2][1] - x[0][1]) / 2, self.dims[1]))
         return self.lines_bboxes
 

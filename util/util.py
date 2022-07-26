@@ -24,16 +24,16 @@ def draw_label(image, point, label, font=cv2.FONT_HERSHEY_SIMPLEX, font_scale=0.
     cv2.putText(image, label, point, font, font_scale, (255, 255, 255), thickness, lineType=cv2.LINE_AA)
 
 
-def draw_box(image, bbox):
+def draw_box(image, bbox, thickness=1):
     x_max = bbox[1][0]
     x_min = bbox[0][0]
     y_max = bbox[2][1]
     y_min = bbox[0][1]
-    cv2.rectangle(image, (x_min, y_min), (x_max, y_max), color=(0, 0, 255))
+    cv2.rectangle(image, (x_min, y_min), (x_max, y_max), color=(0, 0, 255), thickness=thickness)
 
 
-def draw_box_label(image, bbox, label, font=cv2.FONT_HERSHEY_SIMPLEX, font_scale=0.6, thickness=1):
-    draw_box(image, bbox)
+def draw_box_label(image, bbox, label, font=cv2.FONT_HERSHEY_SIMPLEX, font_scale=0.6, thickness=1, box_thickness=1):
+    draw_box(image, bbox, box_thickness)
     draw_label(image, (bbox[0][0], bbox[0][1]), label, font, font_scale, thickness)
 
 
