@@ -293,6 +293,7 @@ class CraftDetector:
 
         # Find a new entry to start propagating from
         if starting_point is None:
+            first_call = True
             for i in range(len(self.used)):
                 if not self.used[i]:
                     starting_point = i
@@ -327,8 +328,8 @@ class CraftDetector:
                 threshold = (h1 + h2) / 3
                 if (up_dist < threshold or down_dist < threshold) and h2 / 2 <= h1 <= h2 * 2:
                     self.cluster_paragraphs_2(first_call=False, starting_point=i)
-
-        self.cluster_paragraphs_2(first_call=False, starting_point=None)
+        if first_call:
+            self.cluster_paragraphs_2(first_call=False, starting_point=None)
         return self.paragraphs
 
     @staticmethod
