@@ -267,8 +267,8 @@ class CraftDetector:
                                                  self.lines_bboxes[i][1][0], self.lines_bboxes[i][0][1])
                         h1 = self.lines_bboxes[most_top][2][1] - self.lines_bboxes[most_top][0][1]
                         h2 = self.lines_bboxes[i][2][1] - self.lines_bboxes[i][0][1]
-                        threshold = (h1 + h2) / 4
-                        if dist < threshold and h2 * 1 / 2 <= h1 <= h2 * 2:
+                        threshold = (h1 + h2) / 2
+                        if dist < threshold and h2 / 2 <= h1 <= h2 * 2:
                             closest.append(i)
                 if len(closest) != 0:
                     for j in closest:
@@ -324,8 +324,8 @@ class CraftDetector:
                                               self.lines_bboxes[i][1][0], self.lines_bboxes[i][2][1])
                 h1 = self.lines_bboxes[starting_point][2][1] - self.lines_bboxes[starting_point][0][1]
                 h2 = self.lines_bboxes[i][2][1] - self.lines_bboxes[i][0][1]
-                threshold = (h1 + h2) / 4
-                if (up_dist < threshold or down_dist < threshold) and h2 * 1 / 2 <= h1 <= h2 * 2:
+                threshold = (h1 + h2) / 2
+                if (up_dist < threshold or down_dist < threshold) and h2 / 2 <= h1 <= h2 * 2:
                     self.cluster_paragraphs_2(first_call=False, starting_point=i)
 
         self.cluster_paragraphs_2(first_call=False, starting_point=None)
